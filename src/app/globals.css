@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Cormorant:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -56,13 +56,19 @@
     @apply border-gray-200;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-midnight-950 text-white;
+    background: radial-gradient(at top, #1d142f 0%, #090112 80%);
+    font-family: 'Noto Sans JP', 'Cormorant', serif;
   }
 }
 
 @layer components {
   .btn-mystic {
-    @apply bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200;
+    @apply bg-gradient-to-r from-mystic-500 to-mystic-600 hover:from-mystic-600 hover:to-mystic-700 transition-all duration-200 text-white font-medium px-6 py-3 rounded-lg shadow-lg;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-mystic-500 to-mystic-600 hover:from-mystic-600 hover:to-mystic-700 transition-all duration-200 text-white font-medium px-6 py-3 rounded-lg shadow-lg;
   }
 
   .crystal-ball {
@@ -209,6 +215,42 @@
     }
     50% {
       box-shadow: 0 0 50px rgba(147, 51, 234, 0.6);
+    }
+  }
+
+  /* ステッパーのスタイル */
+  .stepper-item {
+    @apply flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-300;
+  }
+
+  .stepper-item.active {
+    @apply bg-mystic-500 border-mystic-500 text-white;
+  }
+
+  .stepper-item.completed {
+    @apply bg-mystic-600 border-mystic-600 text-white;
+  }
+
+  .stepper-item.pending {
+    @apply bg-transparent border-gray-300 text-gray-400;
+  }
+
+  /* ナビゲーションのスタイル */
+  .nav-backdrop {
+    @apply backdrop-blur-md bg-black/20 border-b border-white/10;
+  }
+
+  /* カード発光エフェクト */
+  .card-glow {
+    animation: cardGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes cardGlow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(147, 51, 234, 0.6);
     }
   }
 } 

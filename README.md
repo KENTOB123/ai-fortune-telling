@@ -81,27 +81,70 @@ ai-fortune-telling/
 ├── src/
 │   ├── app/                 # Next.js App Router
 │   │   ├── page.tsx        # ホームページ
+│   │   ├── flow/           # 占いフローページ
 │   │   ├── tarot/          # タロット占いページ
 │   │   ├── zodiac/         # 星座占いページ
 │   │   ├── crystal/        # 水晶玉占いページ
+│   │   ├── guide/          # 占いガイドページ
+│   │   ├── login/          # ログインページ
+│   │   ├── register/       # 新規登録ページ
+│   │   ├── contact/        # お問い合わせページ
+│   │   ├── fortuners/      # 占い師プロフィールページ
 │   │   ├── layout.tsx      # レイアウト
 │   │   └── globals.css     # グローバルスタイル
 │   ├── components/         # Reactコンポーネント
-│   │   ├── Header.tsx      # ヘッダー
+│   │   ├── MainNav.tsx     # メインナビゲーション
 │   │   ├── Hero.tsx        # ヒーローセクション
+│   │   ├── GuideSection.tsx # 占いガイドセクション
 │   │   ├── TarotCard.tsx   # タロットカード
 │   │   ├── ZodiacForm.tsx  # 星座占いフォーム
 │   │   ├── CrystalBall.tsx # 水晶玉
 │   │   └── ParticleEffect.tsx # パーティクルエフェクト
 │   ├── lib/               # ユーティリティ
-│   │   └── utils.ts       # 占いロジック
+│   │   ├── utils.ts       # 占いロジック
+│   │   └── fortuners.ts   # 占い師データ
 │   └── types/             # TypeScript型定義
 │       └── index.ts
 ├── public/                # 静的ファイル
+│   ├── fortuners/         # 占い師画像
+│   ├── guide/             # 占いガイド画像
+│   └── cards/             # タロットカード画像
 ├── tailwind.config.ts     # Tailwind CSS設定
 ├── next.config.js         # Next.js設定
 └── package.json           # 依存関係
 ```
+
+## 🖼️ 画像ファイルについて
+
+### 占い師画像 (`/public/fortuners/`)
+
+占い師の顔写真は以下の方法で生成・配置できます：
+
+#### 1. AI 生成（推奨）
+
+```bash
+# 環境変数 AVATAR_API_KEY をセットして実行
+pnpm run gen:avatars
+```
+
+#### 2. 手動アップロード
+
+- 512×512px の PNG 画像を配置
+- ファイル名: `{占い師ID}.png` (例: `luna.png`, `soleil.png`)
+- 占い師 ID: luna, soleil, zephyr, terra, noir
+
+**画像を提供してください**: 現在はプレースホルダー SVG が表示されています。実際の占い師画像をご用意いただけますと、より魅力的なサイトになります。
+
+### 占いガイド画像 (`/public/guide/`)
+
+- `tarot.jpg` - タロット占いの背景画像
+- `crystal.jpg` - 水晶玉占いの背景画像
+- `oracle.jpg` - オラクル占いの背景画像
+
+### タロットカード画像 (`/public/cards/`)
+
+- `back.jpg` - カード背面画像
+- `dodal/` - ドーダルタロットカード画像（78 枚）
 
 ## 🎨 UI/UX の特徴
 

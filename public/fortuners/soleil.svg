@@ -1,0 +1,10 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+    <rect width="512" height="512" fill="#1a1a2e"/>
+    <circle cx="256" cy="256" r="100" fill="#16213e" stroke="#0f3460" stroke-width="4"/>
+    <text x="256" y="270" text-anchor="middle" fill="#e94560" font-family="Arial" font-size="48" font-weight="bold">
+      S
+    </text>
+    <text x="256" y="400" text-anchor="middle" fill="#e94560" font-family="Arial" font-size="16">
+      soleil
+    </text>
+  </svg>

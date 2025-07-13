@@ -24,7 +24,7 @@ export default function CrystalPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-mystic-50 via-white to-mystic-100">
+    <main className="min-h-screen bg-midnight text-white px-4">
       <Header />
       
       <div className="pt-20 pb-12">
@@ -60,7 +60,12 @@ export default function CrystalPage() {
               transition={{ delay: 0.2 }}
               className="flex justify-center"
             >
-              <CrystalBall onReadingComplete={handleReadingComplete} />
+              <div className="text-center">
+                <p className="text-white/60 mb-4">水晶玉占い機能は /flow ページでご利用いただけます</p>
+                <Link href="/flow" className="bg-mystic-500 text-white px-6 py-3 rounded-lg hover:bg-mystic-600 transition-colors">
+                  占いを始める
+                </Link>
+              </div>
             </motion.div>
 
             {/* 占いの説明と履歴 */}
