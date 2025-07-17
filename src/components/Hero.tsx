@@ -12,7 +12,7 @@ export default function Hero() {
       <ParticleEffect />
       
       {/* 背景グラデーション */}
-      <div className="absolute inset-0 bg-gradient-to-br from-midnight-900 via-midnight-800 to-midnight-900" />
+      <div className="absolute inset-0 bg-gradient-to-br from-midnight-900/80 via-midnight-800/80 to-surface-900/80" />
       
       <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <motion.div
@@ -21,24 +21,18 @@ export default function Hero() {
           transition={{ duration: 0.8 }}
           className="mb-8"
         >
-          <div className="flex justify-center items-center space-x-2 mb-6">
-            <Sparkles className="w-8 h-8 text-mystic-400" />
-            <span className="text-lg font-medium text-mystic-300">AI技術で未来を覗く</span>
-            <Sparkles className="w-8 h-8 text-mystic-400" />
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
-            <span className="bg-gradient-to-r from-mystic-400 to-crystalPurple-400 bg-clip-text text-transparent">
-              神秘的な
-            </span>
-            <br />
-            <span className="text-white">占い体験</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-md">
+            AI が占う３種の占術を無料体験
           </h1>
-          
           <p className="text-lg sm:text-xl text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed">
-            AI技術を駆使した最新の占いで、あなたの未来を覗いてみませんか？
-            タロット、星座、水晶玉占いで、運命の扉を開きましょう。
+            タロット・水晶玉・Yes/Noオラクルの３つのAI占いを今すぐ体験。<br />
+            1日3回まで無料、月額プランもご用意しています。
           </p>
+          {/* 信頼&価格バッジ */}
+          <div className="mt-4 flex items-center gap-4 justify-center text-white/80">
+            <span className="px-3 py-1 bg-emerald-600/20 rounded-full">無料3回/日</span>
+            <span className="px-3 py-1 bg-royalGold-600/20 rounded-full">月額¥780〜</span>
+          </div>
         </motion.div>
 
         <motion.div
@@ -47,33 +41,23 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
         >
-          <Link href="/flow">
+          <Link href="/flow?preset=single_card">
             <motion.button 
               className="btn-mystic text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg flex items-center space-x-2"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span>占いを始める</span>
+              <span>無料で占う</span>
               <ArrowRight className="w-5 h-5" />
             </motion.button>
           </Link>
-          <Link href="/fortuners">
+          <Link href="/pricing">
             <motion.button 
-              className="btn-mystic text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg flex items-center space-x-2"
+              className="border-2 border-royalGold-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-royalGold-500/20 transition-colors duration-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span>占い師を選ぶ</span>
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
-          </Link>
-          <Link href="/guide">
-            <motion.button 
-              className="border-2 border-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/10 transition-colors duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              占いの種類を見る
+              料金を見る
             </motion.button>
           </Link>
         </motion.div>

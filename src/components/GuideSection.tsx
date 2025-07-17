@@ -76,7 +76,7 @@ export default function GuideSection() {
               transition={{ duration: 0.6, delay: index * 0.2 }}
               viewport={{ once: true }}
             >
-              <Link href={`/fortuners?preset=${guide.preset}`}>
+              <Link href={guide.id === 'oracle' ? '/guide/oracle' : `/fortuners?preset=${guide.preset}` }>
                 <div className="relative bg-surface-900 border border-surface-800 rounded-xl p-6 h-full transition-all duration-300 hover:border-royalGold-500/50 hover:bg-surface-800/50 group-hover:translate-y-[-4px] group-hover:drop-shadow-lg group-hover:scale-105">
                   {/* 背景画像 */}
                   <div className="absolute inset-0 rounded-xl overflow-hidden opacity-20">
