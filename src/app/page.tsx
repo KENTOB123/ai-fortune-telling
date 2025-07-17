@@ -2,12 +2,14 @@
 
 import Hero from '@/components/Hero';
 import GuideSection from '@/components/GuideSection';
+import DailyHoroscope from '@/components/DailyHoroscope';
 import { motion } from 'framer-motion';
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-midnight-950 via-midnight-900 to-midnight-950">
       <Hero />
+      <DailyHoroscope />
       <GuideSection />
       
       {/* レビュー＆FAQセクション */}
