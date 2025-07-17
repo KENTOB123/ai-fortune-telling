@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Menu, X, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -32,20 +33,23 @@ export default function Header() {
             <span className="text-xl font-bold text-gradient">AI占い</span>
           </motion.div>
 
-          {/* デスクトップメニュー */}
-          <nav className="hidden md:flex space-x-8">
-            {menuItems.map((item, index) => (
-              <motion.a
-                key={item.name}
-                href={item.href}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="text-mystic-700 hover:text-primary-600 transition-colors duration-200 font-medium"
-              >
-                {item.name}
-              </motion.a>
-            ))}
+          {/* ナビゲーション */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link href="/guide" className="text-white/70 hover:text-white transition-colors">
+              占いガイド
+            </Link>
+            <Link href="/pricing" className="text-white/70 hover:text-white transition-colors">
+              料金プラン
+            </Link>
+            <Link href="/contact" className="text-white/70 hover:text-white transition-colors">
+              お問い合わせ
+            </Link>
+            <Link 
+              href="/flow" 
+              className="bg-gradient-to-r from-mystic-500 to-crystalPurple-500 text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-all duration-200"
+            >
+              無料占いを始める
+            </Link>
           </nav>
 
           {/* モバイルメニューボタン */}

@@ -19,7 +19,14 @@ export default function OracleGuidePage() {
       <div className="max-w-2xl mx-auto px-4 py-12">
         {/* ヒーロー画像 */}
         <div className="relative w-full h-48 mb-8 rounded-xl overflow-hidden">
-          <Image src="/guide/oracle.png" alt="Yes/Noオラクル" fill className="object-cover" />
+          <Image 
+            src="/guide/oracle.png" 
+            alt="Yes/Noオラクル" 
+            fill 
+            priority
+            sizes="(max-width: 768px) 80vw, 400px"
+            className="object-cover" 
+          />
         </div>
         {/* 概要 */}
         <h1 className="text-3xl font-bold text-white mb-4 text-center">Yes/No オラクルとは？</h1>

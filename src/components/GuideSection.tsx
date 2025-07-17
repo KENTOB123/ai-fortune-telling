@@ -84,7 +84,9 @@ export default function GuideSection() {
                       src={`/guide/${guide.id}.jpg`}
                       alt={`${guide.title}占い`}
                       fill
-                      className="object-cover"
+                      priority
+                      sizes="(max-width: 768px) 80vw, 400px"
+                      className="object-cover opacity-20"
                     />
                   </div>
                   
@@ -136,9 +138,7 @@ export default function GuideSection() {
             </motion.div>
           ))}
         </div>
-
-
       </div>
     </section>
   );
-} 
+}

@@ -85,7 +85,7 @@ export default function CardReading({ onComplete, preset }: CardReadingProps) {
         </p>
         {/* 進捗表示 */}
         <div className="flex justify-center items-center space-x-4 mb-6">
-          <span className="text-white/60">選択済み: {selectedCards.length}/{required}</span>
+          <span className="text-white/60">{selectedCards.length}/{required} 枚</span>
           <div className="flex space-x-2">
             {Array.from({ length: required }, (_, i) => i + 1).map((num) => (
               <motion.div
