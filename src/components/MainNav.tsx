@@ -21,8 +21,8 @@ export default function MainNav() {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-md border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* ロゴ */}
+          <div className="flex items-center justify-center relative h-16">
+            {/* ロゴ - 中央 */}
             <Link href="/" className="flex items-center space-x-2">
               <motion.div
                 className="w-8 h-8 bg-gradient-to-br from-mystic-500 to-crystalPurple-500 rounded-lg flex items-center justify-center"
@@ -34,8 +34,8 @@ export default function MainNav() {
               <span className="text-white font-bold text-xl">AI占い</span>
             </Link>
 
-            {/* デスクトップナビ */}
-            <div className="hidden md:flex items-center space-x-8">
+            {/* デスクトップナビ - 右端 */}
+            <div className="hidden md:flex items-center space-x-8 absolute right-0">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -59,10 +59,10 @@ export default function MainNav() {
               </Link>
             </div>
 
-            {/* モバイルメニューボタン */}
+            {/* モバイルメニューボタン - 右端 */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
+              className="md:hidden absolute right-0 p-2 text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
               aria-label="メニューを開く"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

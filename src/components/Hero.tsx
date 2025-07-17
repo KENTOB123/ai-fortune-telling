@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Sparkles, Star, Moon, Sun, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import ParticleEffect from './ParticleEffect'
 
 export default function Hero() {
@@ -77,7 +78,7 @@ export default function Hero() {
           </Link>
         </motion.div>
 
-        {/* 特徴カード */}
+        {/* 占い師サムネイル */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -88,12 +89,18 @@ export default function Hero() {
             className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 card-hover"
             whileHover={{ y: -5 }}
           >
-            <div className="w-12 h-12 bg-gradient-to-br from-crystalPurple-500 to-mystic-500 rounded-lg flex items-center justify-center mb-4 mx-auto">
-              <Star className="w-6 h-6 text-white" />
+            <div className="w-16 h-16 rounded-full overflow-hidden mb-4 mx-auto">
+              <Image
+                src="/assets/fortune-tellers/akari.png"
+                alt="灯里 Akari"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">タロット占い</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">灯里 Akari</h3>
             <p className="text-white/60 text-sm">
-              神秘的なタロットカードで未来を読み解きます
+              恋愛占いのエキスパート
             </p>
           </motion.div>
 
@@ -101,12 +108,18 @@ export default function Hero() {
             className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 card-hover"
             whileHover={{ y: -5 }}
           >
-            <div className="w-12 h-12 bg-gradient-to-br from-royalGold-500 to-crystalPurple-500 rounded-lg flex items-center justify-center mb-4 mx-auto">
-              <Moon className="w-6 h-6 text-white" />
+            <div className="w-16 h-16 rounded-full overflow-hidden mb-4 mx-auto">
+              <Image
+                src="/assets/fortune-tellers/seren.png"
+                alt="星乃 Seren"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">星座占い</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">星乃 Seren</h3>
             <p className="text-white/60 text-sm">
-              あなたの星座から運命を導き出します
+              キャリア占いの専門家
             </p>
           </motion.div>
 
@@ -114,12 +127,18 @@ export default function Hero() {
             className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 card-hover"
             whileHover={{ y: -5 }}
           >
-            <div className="w-12 h-12 bg-gradient-to-br from-mystic-500 to-royalGold-500 rounded-lg flex items-center justify-center mb-4 mx-auto">
-              <Sun className="w-6 h-6 text-white" />
+            <div className="w-16 h-16 rounded-full overflow-hidden mb-4 mx-auto">
+              <Image
+                src="/assets/fortune-tellers/tsumugi.png"
+                alt="紡 Tsumugi"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">水晶玉占い</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">紡 Tsumugi</h3>
             <p className="text-white/60 text-sm">
-              透き通る水晶玉に未来を映し出します
+              数秘術のセルフコーチ
             </p>
           </motion.div>
         </motion.div>

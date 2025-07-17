@@ -76,7 +76,7 @@ export default function GuideSection() {
               transition={{ duration: 0.6, delay: index * 0.2 }}
               viewport={{ once: true }}
             >
-              <Link href={`/flow?preset=${guide.preset}`}>
+              <Link href={`/fortuners?preset=${guide.preset}`}>
                 <div className="relative bg-surface-900 border border-surface-800 rounded-xl p-6 h-full transition-all duration-300 hover:border-royalGold-500/50 hover:bg-surface-800/50 group-hover:translate-y-[-4px] group-hover:drop-shadow-lg group-hover:scale-105">
                   {/* 背景画像 */}
                   <div className="absolute inset-0 rounded-xl overflow-hidden opacity-20">
@@ -89,24 +89,24 @@ export default function GuideSection() {
                   </div>
                   
                   {/* アイコン */}
-                  <div className={`relative w-16 h-16 bg-gradient-to-br ${guide.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`relative w-16 h-16 bg-gradient-to-br ${guide.color} rounded-xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300`}>
                     <guide.icon className="w-8 h-8 text-white" />
                   </div>
 
                   {/* タイトル */}
-                  <h3 className="relative text-xl font-mystical text-royalGold-400 mb-4 group-hover:text-royalGold-300 transition-colors">
+                  <h3 className="relative text-xl font-mystical text-royalGold-400 mb-4 text-center group-hover:text-royalGold-300 transition-colors">
                     {guide.title}
                   </h3>
 
                   {/* 説明 */}
-                  <p className="relative text-white/70 text-sm leading-relaxed mb-6">
+                  <p className="relative text-white/70 text-sm leading-relaxed mb-6 text-center">
                     {guide.description}
                   </p>
 
                   {/* 特徴 */}
                   <div className="relative space-y-2 mb-6">
                     {guide.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center text-sm">
+                      <div key={featureIndex} className="flex items-center justify-center text-sm">
                         <div className="w-2 h-2 bg-royalGold-500 rounded-full mr-3 flex-shrink-0"></div>
                         <span className="text-white/60">{feature}</span>
                       </div>

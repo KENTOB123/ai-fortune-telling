@@ -95,6 +95,7 @@ const presets: Record<string, { fortunerId: string; spreadId: string; descriptio
 export default function FlowPage() {
   const searchParams = useSearchParams();
   const preset = searchParams.get('preset');
+  const teller = searchParams.get('teller');
   
   const [currentStep, setCurrentStep] = useState<Step>('fortuner');
   const [selectedFortuner, setSelectedFortuner] = useState<string | null>(null);
@@ -165,6 +166,11 @@ export default function FlowPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-midnight-900 via-midnight-800 to-midnight-900 pt-20">
       <div className="max-w-6xl mx-auto px-4 py-8">
+        {teller && (
+          <div className="mb-4 text-center">
+            <span className="text-mystic-300 font-semibold">選択された占い師ID:</span> {teller}
+          </div>
+        )}
         {/* プリセット情報 */}
         {preset && presets[preset] && (
           <motion.div
@@ -223,7 +229,7 @@ export default function FlowPage() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardReading onComplete={handleCardsComplete} />
+                <CardReading onComplete={handleCardsComplete} preset={preset} />
               </motion.div>
             )}
 

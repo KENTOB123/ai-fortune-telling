@@ -260,12 +260,12 @@ export default function GuidePage() {
                 whileHover={{ scale: 1.02, y: -5 }}
                 onClick={() => setSelectedCategory(category.id)}
               >
-                <div className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mb-4`}>
+                <div className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mb-4 mx-auto`}>
                   <category.icon className="w-6 h-6 text-white" />
                 </div>
                 
-                <h3 className="text-xl font-bold text-white mb-2">{category.title}</h3>
-                <p className="text-white/60 text-sm mb-4">{category.description}</p>
+                <h3 className="text-xl font-bold text-white mb-2 text-center">{category.title}</h3>
+                <p className="text-white/60 text-sm mb-4 text-center">{category.description}</p>
                 
                 <div className="space-y-2">
                   {category.presets.map((preset) => (

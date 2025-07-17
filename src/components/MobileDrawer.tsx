@@ -85,6 +85,21 @@ export default function MobileDrawer({ isOpen, onClose, navItems }: MobileDrawer
                     </Link>
                   </motion.div>
                 ))}
+                
+                {/* ログインボタン */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navItems.length * 0.1 }}
+                >
+                  <Link
+                    href="/login"
+                    className="block px-4 py-3 rounded-lg transition-colors bg-royalGold-500 text-surface-900 font-semibold hover:bg-royalGold-400"
+                    onClick={onClose}
+                  >
+                    ログイン
+                  </Link>
+                </motion.div>
               </nav>
 
               {/* フッター情報 */}

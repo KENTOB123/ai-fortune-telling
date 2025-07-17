@@ -15,7 +15,7 @@ export default function ZodiacPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-mystic-50 via-white to-mystic-100">
+    <main>
       <Header />
       
       <div className="pt-20 pb-12">

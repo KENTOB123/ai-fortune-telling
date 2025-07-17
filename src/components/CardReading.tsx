@@ -8,6 +8,7 @@ import CompleteBar from './CompleteBar';
 
 interface CardReadingProps {
   onComplete: (selectedCards: string[]) => void;
+  preset?: string | null;
 }
 
 // 簡易タロットカードデータ
@@ -36,18 +37,25 @@ const tarotCards = [
   { id: 'world', name: '世界', meaning: '完成、統合、達成' }
 ];
 
-export default function CardReading({ onComplete }: CardReadingProps) {
+export default function CardReading({ onComplete, preset }: CardReadingProps) {
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
   const completeRef = useRef<HTMLDivElement>(null);
 
-  const required = 3; // 固定値（後で動的に変更予定）
+  // presetごとのカード枚数
+  const counts: Record<string, number> = {
+    single_card: 1,
+    '3cards_tarot': 3,
+    cross_spread: 5,
+    celtic_cross: 10,
+  };
+  const required = preset && counts[preset] ? counts[preset] : 3;
 
   const handleCardSelect = (cardId: string) => {
     if (selectedCards.includes(cardId)) {
       setSelectedCards(prev => prev.filter(id => id !== cardId));
-    } else if (selectedCards.length < 3) {
+    } else if (selectedCards.length < required) {
       setSelectedCards(prev => [...prev, cardId]);
     }
   };
@@ -70,17 +78,16 @@ export default function CardReading({ onComplete }: CardReadingProps) {
     <div className="space-y-8">
       <div className="text-center">
         <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-          3枚のカードを選んでください
+          {required}枚のカードを選んでください
         </h2>
         <p className="text-white/60 text-lg mb-6">
-          心を落ち着かせて、直感に従って3枚のカードを選んでください
+          心を落ち着かせて、直感に従って{required}枚のカードを選んでください
         </p>
-        
         {/* 進捗表示 */}
         <div className="flex justify-center items-center space-x-4 mb-6">
-          <span className="text-white/60">選択済み: {selectedCards.length}/3</span>
+          <span className="text-white/60">選択済み: {selectedCards.length}/{required}</span>
           <div className="flex space-x-2">
-            {[1, 2, 3].map((num) => (
+            {Array.from({ length: required }, (_, i) => i + 1).map((num) => (
               <motion.div
                 key={num}
                 className={`w-3 h-3 rounded-full ${
@@ -130,7 +137,7 @@ export default function CardReading({ onComplete }: CardReadingProps) {
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
         {tarotCards.map((card, index) => {
           const isSelected = selectedCards.includes(card.id);
-          const isDisabled = selectedCards.length >= 3 && !isSelected;
+          const isDisabled = selectedCards.length >= required && !isSelected;
           
           return (
             <motion.div
@@ -167,7 +174,7 @@ export default function CardReading({ onComplete }: CardReadingProps) {
           animate={{ opacity: 1, y: 0 }}
         >
           <h3 className="text-xl font-bold text-white mb-4">
-            選ばれたカード ({selectedCards.length}/3)
+            選ばれたカード ({selectedCards.length}/{required})
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {selectedCards.map((cardId, index) => {

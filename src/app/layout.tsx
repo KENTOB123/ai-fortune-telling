@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import MainNav from '@/components/MainNav'
-import MobileDrawer from '@/components/MobileDrawer'
 
 export const metadata: Metadata = {
   title: 'AI占い - 神秘的な未来を覗いてみませんか',
@@ -39,9 +38,6 @@ export default function RootLayout({
         {/* ナビゲーション */}
         <header className="relative z-50">
           <MainNav />
-          <div className="md:hidden">
-            <MobileDrawer />
-          </div>
         </header>
 
         {/* メインコンテンツ */}
