@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import StardustBadge from './StardustBadge';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,12 +34,16 @@ export default function Header() {
             <Link href="/guide" className="text-white/70 hover:text-white transition-colors">
               占いガイド
             </Link>
+            <Link href="/community" className="text-white/70 hover:text-white transition-colors">
+              コミュニティ
+            </Link>
             <Link href="/pricing" className="text-white/70 hover:text-white transition-colors">
               料金プラン
             </Link>
             <Link href="/contact" className="text-white/70 hover:text-white transition-colors">
               お問い合わせ
             </Link>
+            <StardustBadge />
             <Link 
               href="/flow" 
               className="bg-gradient-to-r from-mystic-500 to-crystalPurple-500 text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-all duration-200"
@@ -75,6 +80,13 @@ export default function Header() {
                   onClick={() => setIsOpen(false)}
                 >
                   占いガイド
+                </Link>
+                <Link 
+                  href="/community" 
+                  className="block px-4 py-2 text-white/80 hover:text-royalGold-400 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  コミュニティ
                 </Link>
                 <Link 
                   href="/flow?preset=3cards_tarot" 

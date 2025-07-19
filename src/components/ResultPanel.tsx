@@ -6,6 +6,7 @@ import Image from 'next/image';
 import CrystalRadar from './CrystalRadar';
 import { getFortunerById } from '@/lib/fortuners';
 import { getSpreadById } from '@/lib/spreads';
+import { supabase } from '@/lib/supabase';
 
 // 簡易タロットカードデータ
 const tarotCards = [
@@ -55,9 +56,40 @@ export default function ResultPanel({ selectedCards, fortunerId, spreadId }: Res
   const [messageIndex, setMessageIndex] = useState(0);
   const [crystalTypes, setCrystalTypes] = useState<string[]>([]);
   const [understandingLevel, setUnderstandingLevel] = useState(0);
+  const [isPremium, setIsPremium] = useState(false);
+  const [showUpgradeButton, setShowUpgradeButton] = useState(false);
 
   const fortuner = getFortunerById(fortunerId);
   const spread = getSpreadById(spreadId);
+
+  // プレミアム状態をチェック
+  useEffect(() => {
+    checkPremiumStatus();
+  }, []);
+
+  const checkPremiumStatus = async () => {
+    try {
+      // 開発環境ではダミーデータを返す
+      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        setIsPremium(false);
+        return;
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_premium')
+        .eq('id', user.id)
+        .single();
+
+      setIsPremium(profile?.is_premium || false);
+    } catch (error) {
+      console.error('Check premium status error:', error);
+      setIsPremium(false);
+    }
+  };
 
   // 占い結果の生成（簡易版）
   const generateReading = (): ReadingResult => {
@@ -148,8 +180,12 @@ export default function ResultPanel({ selectedCards, fortunerId, spreadId }: Res
       return () => clearInterval(typeInterval);
     } else {
       setIsReading(false);
+      // Freeユーザーの場合、3行目で停止してアップグレードボタンを表示
+      if (!isPremium) {
+        setShowUpgradeButton(true);
+      }
     }
-  }, [reading, messageIndex]);
+  }, [reading, messageIndex, isPremium]);
 
   if (!reading || !fortuner || !spread) {
     return (
@@ -159,6 +195,18 @@ export default function ResultPanel({ selectedCards, fortunerId, spreadId }: Res
       </div>
     );
   }
+
+  // Freeユーザーの場合、最初の3行のみ表示
+  const messages = [
+    reading.current,
+    reading.personality,
+    reading.compatiblePersonality,
+    reading.incompatiblePersonality,
+    reading.howToDealWithIncompatible,
+    reading.happinessMethod
+  ];
+
+  const displayMessages = isPremium ? messages : messages.slice(0, 3);
 
   return (
     <div className="space-y-8">
@@ -198,199 +246,100 @@ export default function ResultPanel({ selectedCards, fortunerId, spreadId }: Res
                   alt={card?.name || cardId} 
                   width={80} 
                   height={130}
-                  className="mx-auto rounded-lg"
+                  className="rounded-lg border-2 border-mystic-400 mx-auto mb-2"
                 />
-                <p className="text-center text-sm mt-1 text-white/70">
-                  {card?.meaning || cardId}
-                </p>
-                <p className="text-center text-xs mt-1 text-white/50">
-                  {card?.name || cardId}
-                </p>
+                <p className="text-white font-semibold text-sm">{card?.name || cardId}</p>
+                <p className="text-white/60 text-xs">{card?.meaning}</p>
               </motion.div>
             );
           })}
         </div>
       </motion.div>
 
-      {/* 水晶玉レーダー */}
-      <motion.div
-        className="bg-white/5 border border-white/10 rounded-xl p-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <CrystalRadar 
-          selectedTypes={crystalTypes}
-          showAll={true}
-        />
-      </motion.div>
-
       {/* 占い結果 */}
       <motion.div
-        className="bg-white/5 border border-white/10 rounded-xl p-6"
+        className="bg-gradient-to-br from-mystic-500/10 to-crystalPurple-500/10 border border-mystic-500/20 rounded-xl p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
       >
         <h3 className="text-xl font-bold text-white mb-6 flex items-center">
-          <span className="text-2xl mr-2">🔮</span>
-          詳細な読み解き
+          <span className="text-2xl mr-2">✨</span>
+          運命の読み解き
         </h3>
-
+        
         <div className="space-y-6">
-          {/* 現在の状況 */}
-          <motion.div
-            className="bg-gradient-to-r from-mystic-500/10 to-crystalPurple-500/10 border border-mystic-500/20 rounded-lg p-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            <h4 className="text-white font-semibold mb-2 flex items-center">
-              <span className="text-lg mr-2">⚡</span>
-              現在の状況
-            </h4>
-            <p className="text-white/80 leading-relaxed">
-              {isReading && messageIndex === 0 ? currentMessage : reading.current}
-            </p>
-          </motion.div>
-
-          {/* あなたの性格 */}
-          <motion.div
-            className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-lg p-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.9 }}
-          >
-            <h4 className="text-white font-semibold mb-2 flex items-center">
-              <span className="text-lg mr-2">🧠</span>
-              あなたの性格的な特徴
-            </h4>
-            <p className="text-white/80 leading-relaxed">
-              {isReading && messageIndex === 1 ? currentMessage : reading.personality}
-            </p>
-          </motion.div>
-
-          {/* 相性の良い人 */}
-          <motion.div
-            className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-lg p-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.1 }}
-          >
-            <h4 className="text-white font-semibold mb-2 flex items-center">
-              <span className="text-lg mr-2">💕</span>
-              相性の良い人の性格
-            </h4>
-            <p className="text-white/80 leading-relaxed">
-              {isReading && messageIndex === 2 ? currentMessage : reading.compatiblePersonality}
-            </p>
-          </motion.div>
-
-          {/* 相性の悪い人 */}
-          <motion.div
-            className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-lg p-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.3 }}
-          >
-            <h4 className="text-white font-semibold mb-2 flex items-center">
-              <span className="text-lg mr-2">⚠️</span>
-              相性の悪い人の性格
-            </h4>
-            <p className="text-white/80 leading-relaxed">
-              {isReading && messageIndex === 3 ? currentMessage : reading.incompatiblePersonality}
-            </p>
-          </motion.div>
-
-          {/* 接し方 */}
-          <motion.div
-            className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 border border-purple-500/20 rounded-lg p-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.5 }}
-          >
-            <h4 className="text-white font-semibold mb-2 flex items-center">
-              <span className="text-lg mr-2">🤝</span>
-              相性の悪い人との接し方
-            </h4>
-            <p className="text-white/80 leading-relaxed">
-              {isReading && messageIndex === 4 ? currentMessage : reading.howToDealWithIncompatible}
-            </p>
-          </motion.div>
-
-          {/* 幸せになる方法 */}
-          <motion.div
-            className="bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20 rounded-lg p-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.7 }}
-          >
-            <h4 className="text-white font-semibold mb-2 flex items-center">
-              <span className="text-lg mr-2">✨</span>
-              幸せになれる方法
-            </h4>
-            <p className="text-white/80 leading-relaxed">
-              {isReading && messageIndex === 5 ? currentMessage : reading.happinessMethod}
-            </p>
-          </motion.div>
+          {displayMessages.map((message, index) => (
+            <motion.div
+              key={index}
+              className="bg-white/5 rounded-lg p-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.3 }}
+            >
+              <p className="text-white leading-relaxed">
+                {isReading && index === messageIndex ? currentMessage : message}
+                {isReading && index === messageIndex && (
+                  <span className="animate-pulse">|</span>
+                )}
+              </p>
+            </motion.div>
+          ))}
+          
+          {/* Freeユーザー向けの続き表示 */}
+          {!isPremium && showUpgradeButton && (
+            <motion.div
+              className="bg-gradient-to-r from-royalGold-500/20 to-amber-500/20 border border-royalGold-400/30 rounded-lg p-4 text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <p className="text-white/80 mb-4">
+                ... (続きはプレミアムで)
+              </p>
+              <a
+                href="/pricing"
+                className="inline-block bg-gradient-to-r from-royalGold-500 to-amber-500 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+              >
+                全て読む（¥780/月）
+              </a>
+            </motion.div>
+          )}
         </div>
       </motion.div>
 
-      {/* 理解度表示 */}
+      {/* 水晶レーダー */}
       <motion.div
         className="bg-white/5 border border-white/10 rounded-xl p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.0 }}
       >
         <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-          <span className="text-2xl mr-2">📊</span>
-          理解度
+          <span className="text-2xl mr-2">🔮</span>
+          おすすめの水晶
         </h3>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-white/60">あなたの自己理解度</span>
-            <span className="text-white font-semibold">{understandingLevel}%</span>
-          </div>
-          <div className="w-full bg-white/10 rounded-full h-3">
-            <motion.div
-              className="bg-gradient-to-r from-mystic-500 to-crystalPurple-500 h-3 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${understandingLevel}%` }}
-              transition={{ duration: 0.5 }}
-            />
-          </div>
-          <p className="text-white/60 text-sm">
-            {understandingLevel < 30 && "まだ始まったばかりです。もっと深く知りましょう。"}
-            {understandingLevel >= 30 && understandingLevel < 70 && "良い理解が進んでいます。さらに深めましょう。"}
-            {understandingLevel >= 70 && "素晴らしい理解度です！あなたの成長が感じられます。"}
-          </p>
-        </div>
+        <CrystalRadar selectedTypes={crystalTypes} />
       </motion.div>
 
-      {/* アクションボタン */}
+      {/* 理解度メーター */}
       <motion.div
-        className="text-center space-y-4"
+        className="bg-white/5 border border-white/10 rounded-xl p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.2 }}
       >
-        <motion.button
-          className="btn-mystic px-8 py-4 text-lg"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          もっと深く知る
-        </motion.button>
-        <div>
-          <motion.button
-            className="bg-white/10 text-white px-6 py-3 rounded-lg hover:bg-white/20 transition-all"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            次の課題を解決する
-          </motion.button>
+        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+          <span className="text-2xl mr-2">🧠</span>
+          理解度
+        </h3>
+        <div className="w-full bg-surface-800 rounded-full h-3 mb-2">
+          <motion.div
+            className="bg-gradient-to-r from-mystic-500 to-crystalPurple-500 h-3 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${understandingLevel}%` }}
+            transition={{ duration: 1 }}
+          />
         </div>
+        <p className="text-white/60 text-sm">
+          占い結果の理解度: {understandingLevel}%
+        </p>
       </motion.div>
     </div>
   );

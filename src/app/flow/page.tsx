@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import FortunerGrid from '@/components/FortunerGrid';
 import SpreadSelection from '@/components/SpreadSelection';
@@ -10,90 +10,92 @@ import ResultPanel from '@/components/ResultPanel';
 import Stepper from '@/components/Stepper';
 import PaywallModal from '@/components/PaywallModal';
 import { useQuota } from '@/lib/useQuota';
+import { supabase } from '@/lib/supabase';
 
 type Step = 'fortuner' | 'spread' | 'cards' | 'result';
 
 // プリセット設定
 const presets: Record<string, { fortunerId: string; spreadId: string; description: string }> = {
   '3cards_love': {
-    fortunerId: 'luna',
-    spreadId: 'three-cards',
+    fortunerId: 'akari',
+    spreadId: '3cards_tarot',
     description: '恋愛運の3枚スプレッド'
   },
   '3cards_career': {
-    fortunerId: 'solaris',
-    spreadId: 'three-cards',
+    fortunerId: 'seren',
+    spreadId: '3cards_tarot',
     description: 'キャリア運の3枚スプレッド'
   },
   '3cards_spiritual': {
-    fortunerId: 'stella',
-    spreadId: 'three-cards',
+    fortunerId: 'tsumugi',
+    spreadId: '3cards_tarot',
     description: '精神成長の3枚スプレッド'
   },
   '3cards_health': {
-    fortunerId: 'crystal',
-    spreadId: 'three-cards',
+    fortunerId: 'yumie',
+    spreadId: '3cards_tarot',
     description: '健康運の3枚スプレッド'
   },
   '3cards_luck': {
-    fortunerId: 'solaris',
-    spreadId: 'three-cards',
+    fortunerId: 'gen',
+    spreadId: '3cards_tarot',
     description: '運気アップの3枚スプレッド'
   },
   'cross_love': {
-    fortunerId: 'luna',
+    fortunerId: 'akari',
     spreadId: 'cross',
     description: '詳細な恋愛分析'
   },
   'cross_career': {
-    fortunerId: 'solaris',
+    fortunerId: 'seren',
     spreadId: 'cross',
     description: '詳細なキャリア分析'
   },
   'cross_decision': {
-    fortunerId: 'stella',
+    fortunerId: 'tsumugi',
     spreadId: 'cross',
     description: '重要な決断の分析'
   },
   'cross_health': {
-    fortunerId: 'crystal',
+    fortunerId: 'yumie',
     spreadId: 'cross',
     description: '詳細な健康分析'
   },
   'cross_spiritual': {
-    fortunerId: 'stella',
+    fortunerId: 'tsumugi',
     spreadId: 'cross',
     description: '深い精神分析'
   },
   'cross_luck': {
-    fortunerId: 'solaris',
+    fortunerId: 'gen',
     spreadId: 'cross',
     description: '詳細な運気分析'
   },
   'single_decision': {
-    fortunerId: 'stella',
+    fortunerId: 'tsumugi',
     spreadId: 'single',
     description: '直感的なアドバイス'
   },
   'celtic_career': {
-    fortunerId: 'solaris',
-    spreadId: 'celtic-cross',
+    fortunerId: 'seren',
+    spreadId: 'celtic',
     description: '包括的なキャリア分析'
   },
   'celtic_spiritual': {
-    fortunerId: 'stella',
-    spreadId: 'celtic-cross',
+    fortunerId: 'tsumugi',
+    spreadId: 'celtic',
     description: '深い精神分析'
   },
   'celtic_luck': {
-    fortunerId: 'solaris',
-    spreadId: 'celtic-cross',
+    fortunerId: 'gen',
+    spreadId: 'celtic',
     description: '詳細な運気分析'
   }
 };
 
 export default function FlowPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const preset = searchParams.get('preset');
   const teller = searchParams.get('teller');
   
@@ -102,6 +104,7 @@ export default function FlowPage() {
   const [selectedSpread, setSelectedSpread] = useState<string | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   const { quotaInfo, useQuota: consumeQuota } = useQuota();
 
@@ -115,17 +118,35 @@ export default function FlowPage() {
     }
   }, [preset]);
 
+  // tellerが指定されている場合の初期化
+  useEffect(() => {
+    if (teller) {
+      setSelectedFortuner(teller);
+      setCurrentStep('spread');
+    }
+  }, [teller]);
+
   const handleFortunerSelect = (fortunerId: string) => {
     setSelectedFortuner(fortunerId);
     setCurrentStep('spread');
+    
+    // URLにtellerを追加
+    const params = new URLSearchParams(searchParams);
+    params.set('teller', fortunerId);
+    router.push(`/flow?${params.toString()}`);
   };
 
   const handleSpreadSelect = (spreadId: string) => {
     setSelectedSpread(spreadId);
     setCurrentStep('cards');
+    
+    // URLにpresetを追加
+    const params = new URLSearchParams(searchParams);
+    params.set('preset', spreadId);
+    router.push(`/flow?${params.toString()}`);
   };
 
-  const handleCardsComplete = (cards: string[]) => {
+  const handleCardsComplete = async (cards: string[]) => {
     if (!consumeQuota()) {
       setShowPaywall(true);
       return;
@@ -133,6 +154,33 @@ export default function FlowPage() {
     
     setSelectedCards(cards);
     setCurrentStep('result');
+    setIsLoading(true);
+
+    try {
+      // 占い結果を保存
+      const response = await fetch('/api/readings/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          teller: selectedFortuner,
+          preset: selectedSpread,
+          cards,
+          question: null, // 必要に応じて質問フィールドを追加
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('占い結果の保存に失敗しました');
+      }
+
+    } catch (error) {
+      console.error('Save reading error:', error);
+      // エラーが発生しても結果表示は続行
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBack = () => {
@@ -154,6 +202,7 @@ export default function FlowPage() {
     setSelectedFortuner(null);
     setSelectedSpread(null);
     setSelectedCards([]);
+    router.push('/flow');
   };
 
   const steps = [
@@ -200,9 +249,7 @@ export default function FlowPage() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <FortunerGrid
-                  onSelect={handleFortunerSelect}
-                />
+                <FortunerGrid onSelect={handleFortunerSelect} />
               </motion.div>
             )}
 
@@ -214,10 +261,7 @@ export default function FlowPage() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <SpreadSelection
-                  selectedSpread={selectedSpread}
-                  onSelect={handleSpreadSelect}
-                />
+                <SpreadSelection selectedSpread={selectedSpread} onSelect={handleSpreadSelect} />
               </motion.div>
             )}
 
@@ -229,7 +273,7 @@ export default function FlowPage() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardReading onComplete={handleCardsComplete} preset={preset} />
+                <CardReading onComplete={handleCardsComplete} preset={selectedSpread} />
               </motion.div>
             )}
 
@@ -242,59 +286,48 @@ export default function FlowPage() {
                 transition={{ duration: 0.3 }}
               >
                 <ResultPanel
-                  selectedCards={selectedCards}
                   fortunerId={selectedFortuner!}
                   spreadId={selectedSpread!}
+                  selectedCards={selectedCards}
                 />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* ナビゲーションボタン */}
-        <div className="flex justify-between items-center mt-8">
+        {/* 戻るボタン */}
+        {currentStep !== 'fortuner' && (
           <motion.button
             onClick={handleBack}
-            disabled={currentStep === 'fortuner'}
-            className={`px-6 py-3 rounded-lg font-medium transition-all ${
-              currentStep === 'fortuner'
-                ? 'bg-white/10 text-white/30 cursor-not-allowed'
-                : 'bg-white/10 text-white hover:bg-white/20'
-            }`}
-            whileHover={currentStep !== 'fortuner' ? { scale: 1.05 } : {}}
-            whileTap={currentStep !== 'fortuner' ? { scale: 0.95 } : {}}
+            className="fixed bottom-6 left-6 bg-surface-800 text-white px-4 py-2 rounded-lg hover:bg-surface-700 transition-colors"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
           >
             戻る
           </motion.button>
+        )}
 
-          {currentStep === 'result' && (
-            <motion.button
-              onClick={handleRestart}
-              className="btn-mystic px-6 py-3"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              新しい占いを始める
-            </motion.button>
-          )}
-        </div>
+        {/* ローディングオーバーレイ */}
+        {isLoading && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="bg-surface-900 p-6 rounded-xl">
+              <div className="text-white text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mystic-500 mx-auto mb-4"></div>
+                占い結果を保存中...
+              </div>
+            </div>
+          </motion.div>
+        )}
 
-        {/* 無料回数表示 */}
-        <div className="text-center mt-8">
-          <p className="text-white/60 text-sm">
-            今日の残り無料回数: <span className="text-mystic-300 font-semibold">{3 - quotaInfo.count}</span>回
-          </p>
-          <p className="text-white/40 text-xs">
-            リセット時刻: 毎日 09:00 (JST)
-          </p>
-        </div>
+        {/* ペイウォールモーダル */}
+        <PaywallModal isOpen={showPaywall} onClose={() => setShowPaywall(false)} />
       </div>
-
-      {/* 課金モーダル */}
-      <PaywallModal
-        isOpen={showPaywall}
-        onClose={() => setShowPaywall(false)}
-      />
     </div>
   );
 } 

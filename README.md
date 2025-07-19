@@ -1,238 +1,289 @@
-# AI 占いサイト - 神秘的な未来を覗いてみませんか
+# AI 占い - 無料で本格的なタロット占いを体験
 
-AI 技術を駆使した神秘的な占い体験を提供する Web アプリケーションです。タロット、星座、水晶玉占いを通じて、あなたの未来を覗いてみましょう。
+Next.js 14 + React 18 + TypeScript + Tailwind CSS + Framer Motion で構築された本格的な AI 占いアプリケーション。
 
-## 🌟 デモサイト
+## 🔒 セキュリティ重要事項
 
-**本番環境**: [https://ai-fortune-telling.vercel.app](https://ai-fortune-telling.vercel.app)
+**⚠️ 本番環境での運用前に必ず以下を確認してください：**
 
-## 📂 GitHub リポジトリ
+1. **環境変数の設定**
 
-**ソースコード**: [https://github.com/KENTOB123/ai-fortune-telling](https://github.com/KENTOB123/ai-fortune-telling)
+   - すべての環境変数が正しく設定されていることを確認
+   - ダミー値やテスト用の値が本番環境に残っていないことを確認
 
-## ✨ 主な機能
+2. **JWT Secret の変更**
 
-### 🔮 タロット占い
+   - `supabase-schema.sql`の`'your-jwt-secret'`を実際の秘密鍵に変更
+   - 秘密鍵生成: `openssl rand -base64 32`
 
-- **3 枚選択方式**: 9 枚のカードから 3 枚を選んで占う
-- **詳細な人間関係分析**: 現在の状況、性格、相性、幸せになる方法を分析
-- **美しいカードデザイン**: 絵文字を使用した視覚的なカード表示
-- **逆位置対応**: 正位置・逆位置で異なる意味を表示
+3. **API Keys の管理**
 
-### ⭐ 星座占い
+   - Stripe の本番用 API keys を使用
+   - Supabase の本番用プロジェクトを使用
+   - OpenAI の本番用 API key を使用
 
-- **今日の運勢**: 3 行程度の詳細な運勢を表示
-- **運勢ランキング**: 12 星座の今日の運勢ランキング（上位 5 位）
-- **ラッキー情報**: ラッキーカラーとラッキーアイテムを表示
-- **誕生石情報**: 各星座の誕生石も表示
+4. **Webhook 設定**
 
-### 🔮 水晶玉占い
+   - Stripe の Webhook エンドポイントを本番 URL に設定
+   - Webhook secret を適切に管理
 
-- **質問対応**: ユーザーの質問に応じた詳細なアドバイス
-- **5 行以上の充実したアドバイス**: 1 日頑張れるような前向きな内容
-- **エネルギー表示**: ポジティブ/バランス/成長の 3 つのエネルギー
-- **質問履歴**: 質問、ビジョン、アドバイスをセットで保存
+5. **データベースセキュリティ**
+   - Row Level Security (RLS) が有効になっていることを確認
+   - 適切なポリシーが設定されていることを確認
 
-## 🛠️ 技術スタック
+## 機能
 
-- **フロントエンド**: Next.js 14, React 18, TypeScript
-- **スタイリング**: Tailwind CSS, Framer Motion
-- **デプロイ**: Vercel
-- **パッケージ管理**: npm
+### フロントエンド
 
-## 🚀 セットアップ
+- 🎴 **タロット占い**: 78 枚のカードを使用した本格的な占い
+- 🔮 **水晶玉占い**: 内面を深く読み解く占い
+- ✨ **Yes/No オラクル**: 即断即決のシンプル占い
+- 🌟 **今日の星座占い**: 日替わりの運勢
+- 📱 **レスポンシブデザイン**: モバイルファースト
+- 🎨 **美しい UI/UX**: アニメーションとモダンデザイン
 
-### 必要な環境
+### バックエンド & データベース
 
-- Node.js 18.0 以上
-- npm または yarn
+- 🔐 **認証システム**: Supabase Auth
+- 💾 **データベース**: Supabase PostgreSQL
+- 💳 **支払いシステム**: Stripe
+- 📊 **使用回数管理**: プラン別制限
+- 📝 **履歴保存**: 占い結果の永続化
 
-### インストール手順
+## セットアップ
 
-1. **リポジトリのクローン**
-
-```bash
-git clone https://github.com/KENTOB123/ai-fortune-telling.git
-cd ai-fortune-telling
-```
-
-2. **依存関係のインストール**
+### 1. 依存関係のインストール
 
 ```bash
 npm install
 ```
 
-3. **開発サーバーの起動**
+### 2. 環境変数の設定
+
+`.env.local` ファイルを作成し、以下の環境変数を設定：
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+
+# Stripe Price IDs
+NEXT_PUBLIC_STRIPE_PLUS_PRICE_ID=price_your_plus_plan_id
+NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID=price_your_premium_plan_id
+STRIPE_PLUS_PRICE_ID=price_your_plus_plan_id
+STRIPE_PREMIUM_PRICE_ID=price_your_premium_plan_id
+
+# App
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key
+```
+
+### 3. Supabase セットアップ
+
+#### 3.1 Supabase プロジェクト作成
+
+1. [Supabase](https://supabase.com) でアカウント作成
+2. 新しいプロジェクトを作成
+3. プロジェクトの URL と anon key を取得
+
+#### 3.2 データベーススキーマ作成
+
+Supabase の SQL Editor で `supabase-schema.sql` の内容を実行：
+
+```sql
+-- Enable Row Level Security
+ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
+
+-- Create users table
+CREATE TABLE users (
+  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  subscription_status TEXT DEFAULT 'free' CHECK (subscription_status IN ('free', 'plus', 'premium')),
+  subscription_end_date TIMESTAMP WITH TIME ZONE,
+  daily_usage_count INTEGER DEFAULT 0,
+  last_usage_date DATE,
+  stripe_customer_id TEXT
+);
+
+-- Create fortune_history table
+CREATE TABLE fortune_history (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+  fortuner_id TEXT NOT NULL,
+  spread_type TEXT NOT NULL,
+  selected_cards TEXT[] NOT NULL,
+  result_text TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create favorite_fortuners table
+CREATE TABLE favorite_fortuners (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+  fortuner_id TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, fortuner_id)
+);
+
+-- Enable Row Level Security
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE fortune_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE favorite_fortuners ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for users
+CREATE POLICY "Users can view own profile" ON users
+  FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile" ON users
+  FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Users can insert own profile" ON users
+  FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- RLS Policies for fortune_history
+CREATE POLICY "Users can view own fortune history" ON fortune_history
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own fortune history" ON fortune_history
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- RLS Policies for favorite_fortuners
+CREATE POLICY "Users can view own favorite fortuners" ON favorite_fortuners
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own favorite fortuners" ON favorite_fortuners
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own favorite fortuners" ON favorite_fortuners
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Create indexes for better performance
+CREATE INDEX idx_fortune_history_user_id ON fortune_history(user_id);
+CREATE INDEX idx_fortune_history_created_at ON fortune_history(created_at);
+CREATE INDEX idx_favorite_fortuners_user_id ON favorite_fortuners(user_id);
+
+-- Create function to handle user creation
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO users (id, email)
+  VALUES (NEW.id, NEW.email);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create trigger for new user creation
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+-- Create function to update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for updated_at
+CREATE TRIGGER update_users_updated_at
+  BEFORE UPDATE ON users
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+```
+
+### 4. Stripe セットアップ
+
+#### 4.1 Stripe アカウント作成
+
+1. [Stripe](https://stripe.com) でアカウント作成
+2. ダッシュボードから API keys を取得
+
+#### 4.2 商品・価格設定
+
+Stripe ダッシュボードで以下の商品を作成：
+
+**Plus プラン**
+
+- 価格: ¥480/月
+- 商品名: Plus Plan
+- 価格 ID を取得して環境変数に設定
+
+**Premium プラン**
+
+- 価格: ¥1,280/月
+- 商品名: Premium Plan
+- 価格 ID を取得して環境変数に設定
+
+#### 4.3 Webhook 設定
+
+1. Stripe ダッシュボードで Webhook エンドポイントを作成
+2. エンドポイント URL: `https://your-domain.com/api/stripe/webhook`
+3. イベント: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+4. Webhook secret を取得して環境変数に設定
+
+### 5. 開発サーバー起動
 
 ```bash
 npm run dev
 ```
 
-4. **ブラウザでアクセス**
+## アーキテクチャ
 
-```
-http://localhost:3000
-```
+### フロントエンド
 
-## 📁 プロジェクト構造
+- **Next.js 14**: App Router
+- **React 18**: Hooks, Suspense
+- **TypeScript**: 型安全性
+- **Tailwind CSS**: スタイリング
+- **Framer Motion**: アニメーション
 
-```
-ai-fortune-telling/
-├── src/
-│   ├── app/                 # Next.js App Router
-│   │   ├── page.tsx        # ホームページ
-│   │   ├── flow/           # 占いフローページ
-│   │   ├── tarot/          # タロット占いページ
-│   │   ├── zodiac/         # 星座占いページ
-│   │   ├── crystal/        # 水晶玉占いページ
-│   │   ├── guide/          # 占いガイドページ
-│   │   ├── login/          # ログインページ
-│   │   ├── register/       # 新規登録ページ
-│   │   ├── contact/        # お問い合わせページ
-│   │   ├── fortuners/      # 占い師プロフィールページ
-│   │   ├── layout.tsx      # レイアウト
-│   │   └── globals.css     # グローバルスタイル
-│   ├── components/         # Reactコンポーネント
-│   │   ├── MainNav.tsx     # メインナビゲーション
-│   │   ├── Hero.tsx        # ヒーローセクション
-│   │   ├── GuideSection.tsx # 占いガイドセクション
-│   │   ├── TarotCard.tsx   # タロットカード
-│   │   ├── ZodiacForm.tsx  # 星座占いフォーム
-│   │   ├── CrystalBall.tsx # 水晶玉
-│   │   └── ParticleEffect.tsx # パーティクルエフェクト
-│   ├── lib/               # ユーティリティ
-│   │   ├── utils.ts       # 占いロジック
-│   │   └── fortuners.ts   # 占い師データ
-│   └── types/             # TypeScript型定義
-│       └── index.ts
-├── public/                # 静的ファイル
-│   ├── fortuners/         # 占い師画像
-│   ├── guide/             # 占いガイド画像
-│   └── cards/             # タロットカード画像
-├── tailwind.config.ts     # Tailwind CSS設定
-├── next.config.js         # Next.js設定
-└── package.json           # 依存関係
-```
+### バックエンド
 
-## 🖼️ 画像ファイルについて
+- **Supabase**: 認証・データベース
+- **Stripe**: 支払い処理
+- **OpenAI**: AI 占い生成
+- **Vercel KV**: キャッシュ
 
-### 占い師画像 (`/public/fortuners/`)
+### データベース設計
 
-占い師の顔写真は以下の方法で生成・配置できます：
+- **users**: ユーザー情報・サブスクリプション状態
+- **fortune_history**: 占い履歴
+- **favorite_fortuners**: お気に入り占い師
 
-#### 1. AI 生成（推奨）
+## デプロイ
 
-```bash
-# 環境変数 AVATAR_API_KEY をセットして実行
-pnpm run gen:avatars
-```
+### Vercel
 
-#### 2. 手動アップロード
+1. GitHub リポジトリを Vercel に接続
+2. 環境変数を設定
+3. 自動デプロイ
 
-- 512×512px の PNG 画像を配置
-- ファイル名: `{占い師ID}.png` (例: `luna.png`, `soleil.png`)
-- 占い師 ID: luna, soleil, zephyr, terra, noir
+### 環境変数設定
 
-**画像を提供してください**: 現在はプレースホルダー SVG が表示されています。実際の占い師画像をご用意いただけますと、より魅力的なサイトになります。
+Vercel ダッシュボードで以下の環境変数を設定：
 
-### 占いガイド画像 (`/public/guide/`)
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `NEXT_PUBLIC_STRIPE_PLUS_PRICE_ID`
+- `NEXT_PUBLIC_STRIPE_PREMIUM_PRICE_ID`
+- `STRIPE_PLUS_PRICE_ID`
+- `STRIPE_PREMIUM_PRICE_ID`
+- `NEXT_PUBLIC_BASE_URL`
+- `OPENAI_API_KEY`
 
-- `tarot.jpg` - タロット占いの背景画像
-- `crystal.jpg` - 水晶玉占いの背景画像
-- `oracle.jpg` - オラクル占いの背景画像
+## ライセンス
 
-### タロットカード画像 (`/public/cards/`)
-
-- `back.jpg` - カード背面画像
-- `dodal/` - ドーダルタロットカード画像（78 枚）
-
-## 🎨 UI/UX の特徴
-
-- **レスポンシブデザイン**: モバイル、タブレット、デスクトップ対応
-- **美しいアニメーション**: Framer Motion による滑らかなアニメーション
-- **神秘的なテーマ**: 占いらしい神秘的なカラーパレット
-- **直感的な操作**: 分かりやすい UI/UX 設計
-- **アクセシビリティ**: アイコンとテキストの組み合わせで視認性向上
-
-## 🔮 占い機能の詳細
-
-### タロット占い
-
-- **カード選択**: 9 枚のカードから 3 枚を選択
-- **占い結果**: 6 つの項目で詳細分析
-  - 現在の状況
-  - 性格的な特徴
-  - 相性の良い人の性格
-  - 相性の悪い人の性格
-  - 相性の悪い人との接し方
-  - 幸せになれる方法
-
-### 星座占い
-
-- **生年月日入力**: 自動で星座を判定
-- **今日の運勢**: 3 行程度の詳細な運勢
-- **運勢ランキング**: 12 星座の今日の運勢順位
-- **ラッキー情報**: カラーとアイテムを表示
-
-### 水晶玉占い
-
-- **質問入力**: 自由な質問を入力
-- **詳細アドバイス**: 5 行以上の充実した内容
-- **エネルギー表示**: 3 つのエネルギータイプ
-- **履歴保存**: 質問と回答の履歴
-
-## 🚀 デプロイ
-
-### Vercel でのデプロイ
-
-1. **Vercel にサインアップ**: [vercel.com](https://vercel.com)
-2. **GitHub リポジトリをインポート**: `KENTOB123/ai-fortune-telling`
-3. **自動デプロイ**: プッシュすると自動でデプロイ
-
-### 環境変数
-
-現在は環境変数は不要ですが、将来的に AI API を追加する際は以下を設定：
-
-```
-OPENAI_API_KEY=your_api_key_here
-```
-
-## 🔮 今後の拡張予定
-
-- [ ] **AI API 連携**: ChatGPT API を使用した本格的な AI 占い
-- [ ] **バックエンド構築**: Node.js/Express API
-- [ ] **データベース**: 占い履歴の永続化
-- [ ] **ユーザー認証**: アカウント機能
-- [ ] **課金システム**: プレミアム占い機能
-- [ ] **多言語対応**: 英語、中国語など
-- [ ] **PWA 対応**: オフライン対応
-- [ ] **プッシュ通知**: 日替わり運勢通知
-
-## 📝 注意事項
-
-- このサイトは娯楽目的で作成されています
-- 占い結果は参考程度にお楽しみください
-- 重要な人生の決断は、占い結果に依存せず、ご自身で判断してください
-- 現在はフロントエンドのみの実装です（AI API は未連携）
-
-## 🤝 コントリビューション
-
-プルリクエストやイシューの報告を歓迎します！
-
-1. このリポジトリをフォーク
-2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add some amazing feature'`)
-4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
-5. プルリクエストを作成
-
-## 📄 ライセンス
-
-このプロジェクトは MIT ライセンスの下で公開されています。
-
-## 👨‍💻 作者
-
-AI 占いサイト開発チーム
-
----
-
-**神秘的な未来を覗いてみませんか？** 🔮✨
+MIT License
