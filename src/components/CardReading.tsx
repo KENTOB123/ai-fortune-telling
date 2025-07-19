@@ -209,7 +209,7 @@ export default function CardReading({ onComplete, preset }: CardReadingProps) {
       {/* CompleteModal と CompleteBar */}
       {showComplete && (
         <>
-          <CompleteModal open onStart={handleContinue} />
+          <CompleteModal open={showComplete} setOpen={setShowComplete} onStart={handleContinue} />
           <CompleteBar onStart={handleContinue} />
           
           {/* 履歴保存バナー */}

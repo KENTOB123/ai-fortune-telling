@@ -3,6 +3,7 @@
 import useSWR from 'swr';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Skeleton } from '@/components/ui/skeleton';
 import AdBanner from './AdBanner';
 
 const SIGNS = [
@@ -12,7 +13,11 @@ const SIGNS = [
   ['capricorn','山羊座'], ['aquarius','水瓶座'], ['pisces','魚座'],
 ];
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+const fetcher = (url: string) =>
+  fetch(url).then(r => {
+    if (!r.ok) throw new Error("network");
+    return r.json();
+  });
 
 export default function DailyHoroscope() {
   const [sign, setSign] = useState(
@@ -25,7 +30,7 @@ export default function DailyHoroscope() {
   );
   
   const { data, error, isLoading } = useSWR(
-    `/api/daily-horoscope?sign=${sign}`, 
+    sign ? `/api/daily-horoscope?sign=${sign}` : null, 
     fetcher,
     {
       revalidateOnFocus: false,
@@ -79,19 +84,13 @@ export default function DailyHoroscope() {
           >
             {isLoading ? (
               <div className="space-y-4">
-                <div className="h-28 animate-pulse bg-surface-800 rounded-lg" />
-                <div className="h-4 animate-pulse bg-surface-800 rounded w-3/4 mx-auto" />
-                <div className="h-10 animate-pulse bg-surface-800 rounded-lg" />
+                <Skeleton className="h-28" />
+                <Skeleton className="h-4 w-3/4 mx-auto" />
+                <Skeleton className="h-10" />
               </div>
             ) : error ? (
               <div className="text-center py-8">
-                <p className="text-red-400 mb-4">読み込みに失敗しました</p>
-                <button 
-                  onClick={() => window.location.reload()}
-                  className="text-royalGold-400 hover:text-royalGold-300 transition-colors"
-                >
-                  再試行
-                </button>
+                <p className="text-white/70">運勢の取得に失敗しました。<br />時間をおいて再度お試しください。</p>
               </div>
             ) : data ? (
               <>
