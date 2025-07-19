@@ -28,6 +28,7 @@
     "stripe": "^18.3.0",
     "swr": "^2.3.4",
     "tailwind-merge": "^2.2.0",
+    "vercel": "^44.5.0",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
