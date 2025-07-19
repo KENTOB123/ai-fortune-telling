@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// 動的ルートとして設定
+export const dynamic = 'force-dynamic';
+
 // 条件付きインポートでSupabaseクライアントを取得
 let supabase: any = null;
 try {
