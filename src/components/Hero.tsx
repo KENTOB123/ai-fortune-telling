@@ -1,10 +1,17 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Sparkles, Star, Moon, Sun, ArrowRight } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import Image from 'next/image'
 import ParticleEffect from './ParticleEffect'
+
+// Dynamic imports for icons
+const Sparkles = dynamic(() => import('lucide-react').then(m => m.Sparkles), { ssr: false });
+const Star = dynamic(() => import('lucide-react').then(m => m.Star), { ssr: false });
+const Moon = dynamic(() => import('lucide-react').then(m => m.Moon), { ssr: false });
+const Sun = dynamic(() => import('lucide-react').then(m => m.Sun), { ssr: false });
+const ArrowRight = dynamic(() => import('lucide-react').then(m => m.ArrowRight), { ssr: false });
 
 export default function Hero() {
   return (
@@ -29,9 +36,9 @@ export default function Hero() {
             1日3回まで無料、月額プランもご用意しています。
           </p>
           {/* 信頼&価格バッジ */}
-          <div className="mt-4 flex items-center gap-4 justify-center text-white/80">
-            <span className="px-3 py-1 bg-emerald-600/20 rounded-full">無料3回/日</span>
-            <span className="px-3 py-1 bg-royalGold-600/20 rounded-full">月額¥780〜</span>
+          <div className="flex flex-wrap justify-center gap-2 mt-4 text-base sm:text-lg">
+            <span className="px-3 py-1 bg-emerald-600/20 rounded-full text-white/80">無料3回/日</span>
+            <span className="px-3 py-1 bg-royalGold-600/20 rounded-full text-white/80">月額¥780〜</span>
           </div>
         </motion.div>
 
@@ -41,24 +48,11 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
         >
-          <Link href="/flow?preset=single_card">
-            <motion.button 
-              className="btn-mystic text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg flex items-center space-x-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span>無料で占う</span>
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
+          <Link href="/flow" className="btn-mystic">
+            無料占いを始める
           </Link>
-          <Link href="/pricing">
-            <motion.button 
-              className="border-2 border-royalGold-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-royalGold-500/20 transition-colors duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              料金を見る
-            </motion.button>
+          <Link href="/pricing" className="btn-ghost ml-3 hidden sm:inline-flex">
+            プランを見る
           </Link>
         </motion.div>
 

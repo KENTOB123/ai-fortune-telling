@@ -99,7 +99,7 @@ function HistoryTab() {
       fortuner: 'ルナ',
       date: '2024-01-15',
       time: '14:30',
-      summary: '恋愛運について'
+      summary: '恋愛運について占った結果、新しい出会いが近いことが分かりました。積極的に行動することで良い結果が期待できます。'
     },
     {
       id: 2,
@@ -107,7 +107,7 @@ function HistoryTab() {
       fortuner: 'ソレイユ',
       date: '2024-01-14',
       time: '10:15',
-      summary: '仕事運について'
+      summary: '仕事運について占った結果、現在の努力が認められる時期です。新しいプロジェクトへの参加も期待できます。'
     },
     {
       id: 3,
@@ -115,30 +115,33 @@ function HistoryTab() {
       fortuner: 'ゼファー',
       date: '2024-01-13',
       time: '16:45',
-      summary: '転職の決断について'
+      summary: '転職の決断について占った結果、慎重に検討することをお勧めします。もう少し待つことで良いタイミングが訪れます。'
     }
   ];
 
   return (
     <div>
       <h2 className="text-xl font-mystical text-royalGold-400 mb-4">占い履歴</h2>
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {mockHistory.map((item) => (
           <motion.div
             key={item.id}
             className="bg-surface-800 border border-surface-700 rounded-lg p-4 hover:border-surface-600 transition-colors"
             whileHover={{ scale: 1.01 }}
           >
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-white font-medium">{item.type}</h3>
-                <p className="text-white/60 text-sm">{item.summary}</p>
-                <p className="text-mystic-300 text-sm">占い師: {item.fortuner}</p>
-              </div>
+            <div className="flex justify-between items-start mb-3">
+              <h3 className="text-white font-medium text-base">{item.type}</h3>
               <div className="text-right">
                 <p className="text-white/40 text-sm">{item.date}</p>
                 <p className="text-white/40 text-sm">{item.time}</p>
               </div>
+            </div>
+            <p className="text-white/60 text-sm line-clamp-3 mb-3">{item.summary}</p>
+            <div className="flex justify-between items-center">
+              <p className="text-mystic-300 text-sm">占い師: {item.fortuner}</p>
+              <button className="text-royalGold-400 hover:text-royalGold-300 text-sm font-medium transition-colors">
+                再鑑定
+              </button>
             </div>
           </motion.div>
         ))}

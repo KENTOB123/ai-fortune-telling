@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TarotCard from './TarotCard';
 import CompleteModal from './CompleteModal';
 import CompleteBar from './CompleteBar';
+import Link from 'next/link';
 
 interface CardReadingProps {
   onComplete: (selectedCards: string[]) => void;
@@ -44,6 +45,13 @@ export default function CardReading({ onComplete, preset }: CardReadingProps) {
   const completeRef = useRef<HTMLDivElement>(null);
 
   // presetごとのカード枚数
+  const presetMap = {
+    single: 1,
+    '3cards_tarot': 3,
+    cross: 5,
+    celtic: 10
+  };
+  
   const counts: Record<string, number> = {
     single_card: 1,
     '3cards_tarot': 3,
@@ -203,6 +211,19 @@ export default function CardReading({ onComplete, preset }: CardReadingProps) {
         <>
           <CompleteModal open onStart={handleContinue} />
           <CompleteBar onStart={handleContinue} />
+          
+          {/* 履歴保存バナー */}
+          <motion.div
+            className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-mystic-500/90 to-crystalPurple-500/90 backdrop-blur-sm border border-mystic-500/30 rounded-xl px-6 py-3 text-white text-center z-40"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <Link href="/mypage" className="flex items-center space-x-2 hover:opacity-90 transition-opacity">
+              <span>履歴に保存しました！</span>
+              <span className="text-royalGold-300">▶ マイページ</span>
+            </Link>
+          </motion.div>
         </>
       )}
     </div>

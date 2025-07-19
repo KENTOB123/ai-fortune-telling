@@ -17,6 +17,7 @@ const guideTypes = [
     icon: SparklesIcon,
     color: 'from-purple-500 to-indigo-600',
     preset: '3cards_tarot',
+    cardCount: 3,
     features: ['過去の影響', '現在の状況', '未来の可能性']
   },
   {
@@ -26,6 +27,7 @@ const guideTypes = [
     icon: EyeIcon,
     color: 'from-blue-500 to-cyan-600',
     preset: 'crystal_reading',
+    cardCount: 5,
     features: ['現在の状態', '内面の真実', '進むべき道']
   },
   {
@@ -35,6 +37,7 @@ const guideTypes = [
     icon: QuestionMarkCircleIcon,
     color: 'from-green-500 to-emerald-600',
     preset: 'yesno',
+    cardCount: 10,
     features: ['明確な答え', '迅速な判断', '行動指針']
   }
 ];
@@ -107,6 +110,11 @@ export default function GuideSection() {
 
                   {/* 特徴 */}
                   <div className="relative space-y-2 mb-6">
+                    <div className="flex items-center justify-center text-sm mb-3">
+                      <span className="px-2 py-1 bg-royalGold-500/20 text-royalGold-400 rounded-full text-xs font-medium">
+                        {guide.cardCount}枚のカード
+                      </span>
+                    </div>
                     {guide.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center justify-center text-sm">
                         <div className="w-2 h-2 bg-royalGold-500 rounded-full mr-3 flex-shrink-0"></div>

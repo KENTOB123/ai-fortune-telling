@@ -78,9 +78,10 @@ export default function DailyHoroscope() {
             viewport={{ once: true }}
           >
             {isLoading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-royalGold-400 mx-auto mb-4"></div>
-                <p className="text-white/60">読み込み中…</p>
+              <div className="space-y-4">
+                <div className="h-28 animate-pulse bg-surface-800 rounded-lg" />
+                <div className="h-4 animate-pulse bg-surface-800 rounded w-3/4 mx-auto" />
+                <div className="h-10 animate-pulse bg-surface-800 rounded-lg" />
               </div>
             ) : error ? (
               <div className="text-center py-8">
