@@ -4,7 +4,7 @@ import { generateFortuneReading } from '@/lib/openai';
 export async function POST(request: NextRequest) {
   try {
     // 開発環境ではダミー応答を返す
-    if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://your-project.supabase.co') {
       return NextResponse.json({
         message: '占い結果が保存されました（開発モード）',
         reading: {
