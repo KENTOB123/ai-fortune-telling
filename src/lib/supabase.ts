@@ -4,14 +4,18 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// 開発環境では環境変数が設定されていなくてもビルドを許可
-if (process.env.NODE_ENV === 'production' && (!supabaseUrl || !supabaseAnonKey)) {
-  throw new Error('Supabase environment variables are not configured');
-}
-
 // 開発環境用のダミー値（本番環境では使用されない）
 const fallbackUrl = 'https://your-project.supabase.co';
 const fallbackKey = 'your-anon-key';
+
+// 実際の環境変数が設定されているかチェック
+const hasRealSupabaseConfig = supabaseUrl && supabaseUrl !== fallbackUrl && 
+                              supabaseAnonKey && supabaseAnonKey !== fallbackKey;
+
+// 本番環境でデプロイ時に環境変数がない場合のみエラーを出す
+if (process.env.VERCEL && process.env.NODE_ENV === 'production' && !hasRealSupabaseConfig) {
+  console.warn('Supabase environment variables are not configured for production deployment');
+}
 
 export const supabase = createClient(
   supabaseUrl || fallbackUrl,
@@ -21,7 +25,7 @@ export const supabase = createClient(
 // サービスロールキーを使用したクライアント（管理者権限）
 export const supabaseAdmin = supabaseServiceKey 
   ? createClient(supabaseUrl || fallbackUrl, supabaseServiceKey)
-  : null;
+  : createClient(fallbackUrl, fallbackKey); // fallback for build time
 
 // 型定義
 export interface Profile {

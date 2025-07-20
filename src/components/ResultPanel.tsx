@@ -69,8 +69,8 @@ export default function ResultPanel({ selectedCards, fortunerId, spreadId }: Res
 
   const checkPremiumStatus = async () => {
     try {
-      // 開発環境ではダミーデータを返す
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      // 環境変数がない場合はダミーデータを返す
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://your-project.supabase.co') {
         setIsPremium(false);
         return;
       }

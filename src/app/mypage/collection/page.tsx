@@ -42,8 +42,8 @@ export default function CollectionPage() {
 
   const fetchCollection = async () => {
     try {
-      // 開発環境ではダミーデータを返す
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      // 環境変数がない場合はダミーデータを返す
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://your-project.supabase.co') {
         const dummyCards = ['fool', 'magician', 'high_priestess', 'empress', 'emperor'];
         setCollectedCards(dummyCards);
         setCompletionPercentage(Math.round((dummyCards.length / tarotCards.length) * 100));
@@ -52,7 +52,10 @@ export default function CollectionPage() {
       }
 
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from('card_collection')
